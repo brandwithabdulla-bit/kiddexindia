@@ -5,6 +5,24 @@ import { ProductsContext } from '../context/ProductsContext';
 
 const Offers = () => {
   const navigate = useNavigate();
+  const { products, isLoading, error } = React.useContext(ProductsContext);
+
+  if (isLoading) {
+    return (
+      <div className="container section page-transition" style={{ minHeight: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <h2>Loading offers...</h2>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container section page-transition" style={{ minHeight: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <h2>Error loading offers: {error}</h2>
+      </div>
+    );
+  }
+
   // Filter products that have a discount
   const discountedProducts = products.filter(p => p.discountPercentage > 0);
 
