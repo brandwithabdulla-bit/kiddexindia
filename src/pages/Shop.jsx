@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { products } from '../data/products';
+import { ProductsContext } from '../context/ProductsContext';
 import ProductCard from '../components/ProductCard';
 import './Shop.css';
 
 const Shop = () => {
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const { products, isLoading, error } = React.useContext(ProductsContext);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeAge, setActiveAge] = useState('All');
   
   const location = useLocation();
 
-  const categories = ['All', ...new Set(products.map(p => p.category))];
-  const ages = ['All', ...new Set(products.map(p => p.ageGroup))];
+  const categories = ['All', ...new Set(products.map(p => p.category).filter(Boolean))];
+  const ages = ['All', ...new Set(products.map(p => p.ageGroup).filter(Boolean))];
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -35,7 +36,23 @@ const Shop = () => {
     }
     
     setFilteredProducts(result);
-  }, [activeCategory, activeAge]);
+  }, [activeCategory, activeAge, products]);
+
+  if (isLoading) {
+    return (
+      <div className="shop-page container section page-transition" style={{ minHeight: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <h2>Loading products...</h2>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="shop-page container section page-transition" style={{ minHeight: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <h2>Error loading products: {error}</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="shop-page container section page-transition">

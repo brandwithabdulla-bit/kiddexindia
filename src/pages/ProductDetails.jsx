@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { products } from '../data/products';
+import { ProductsContext } from '../context/ProductsContext';
 import { CartContext } from '../context/CartContext';
 import { Check, Package, MessageCircle } from 'lucide-react';
 import './ProductDetails.css';
@@ -8,9 +8,26 @@ import './ProductDetails.css';
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { products, isLoading, error } = useContext(ProductsContext);
   const { addToCart } = useContext(CartContext);
   const [quantity, setQuantity] = useState(1);
   
+  if (isLoading) {
+    return (
+      <div className="container section text-center page-transition" style={{ minHeight: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <h2>Loading product...</h2>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container section text-center page-transition" style={{ minHeight: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <h2>Error loading product: {error}</h2>
+      </div>
+    );
+  }
+
   const product = products.find(p => p.id === id);
 
   if (!product) {

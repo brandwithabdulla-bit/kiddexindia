@@ -2,11 +2,29 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { products } from '../data/products';
+import { ProductsContext } from '../context/ProductsContext';
 import './Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
+  const { products, isLoading, error } = React.useContext(ProductsContext);
+
+  if (isLoading) {
+    return (
+      <div className="home-page page-transition" style={{ minHeight: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <h2>Loading products...</h2>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="home-page page-transition" style={{ minHeight: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <h2>Error loading products: {error}</h2>
+      </div>
+    );
+  }
+
   // Show up to 6 featured products
   const featuredProducts = products.filter(p => p.featured).slice(0, 6);
 
