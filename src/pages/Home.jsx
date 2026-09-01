@@ -25,8 +25,11 @@ const Home = () => {
     );
   }
 
-  // Show up to 6 featured products
-  const featuredProducts = products.filter(p => p.featured).slice(0, 6);
+  // Show up to 6 featured products, fallback to any 6 products if none are featured
+  let featuredProducts = products.filter(p => p.featured).slice(0, 6);
+  if (featuredProducts.length === 0) {
+    featuredProducts = products.slice(0, 6);
+  }
 
   return (
     <div className="home-page page-transition">
